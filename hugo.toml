@@ -1,10 +1,14 @@
-baseURL = 'https://hugomvale.github.io/blog/'
+baseURL = 'https://hugomvale.github.io/random-events/'
 locale = 'en-us'
-title = 'Blog'
+title = 'Random Events'
 theme = 'PaperMod'
+
+[markup.goldmark.renderer]
+unsafe = true
 
 [markup.goldmark.extensions.passthrough]
 enable = true
+
 [markup.goldmark.extensions.passthrough.delimiters]
 block = [['\[', '\]'], ['$$', '$$']]
 inline = [['\(', '\)'], ['$', '$']]
