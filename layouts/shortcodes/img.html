@@ -1,0 +1,7 @@
+<p align="center">
+    <img src="{{ .Get "src" }}" alt="{{ .Get "alt" }}" style="max-width: {{ .Get "width" | default "600px" }}; width:
+        100%;">
+</p>
+{{ if .Get "caption" }}
+<p align="center"><em>{{ .Get "caption" }}</em></p>
+{{ end }}

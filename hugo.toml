@@ -1,0 +1,10 @@
+baseURL = 'https://example.org/'
+locale = 'en-us'
+title = 'Blog'
+theme = 'PaperMod'
+
+[markup.goldmark.extensions.passthrough]
+enable = true
+[markup.goldmark.extensions.passthrough.delimiters]
+block = [['\[', '\]'], ['$$', '$$']]
+inline = [['\(', '\)'], ['$', '$']]
