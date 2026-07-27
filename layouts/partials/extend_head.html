@@ -1,4 +1,7 @@
-{{ if .Params.math }}
+{{ $mathPages := where site.RegularPages "Type" "in" site.Params.mainSections }}
+{{ $hasMathPosts := gt (len (where $mathPages "Params.math" true)) 0 }}
+{{ $needsMath := or .Params.math (and (in (slice "home" "section" "taxonomy" "term") .Kind) $hasMathPosts) }}
+{{ if $needsMath }}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css"
     integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
 
