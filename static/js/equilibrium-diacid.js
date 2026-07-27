@@ -2,6 +2,10 @@
     const CANVAS_ID = 'equilibrium-diacid';
     const NUM_MOLECULES = 35;
     const UPDATE_INTERVAL_MS = 500;
+    const BROWNIAN_JITTER = 0.35;
+    const ROTATION_JITTER = 0.03;
+    const MAX_SPEED = 0.8;
+    const DAMPING = 0.98;
     const COLOR_NON_IONIZED = '#2b8a3e';
     const COLOR_IONIZED = '#e03131';
     const COLOR_BACKBONE = '#495057';
@@ -73,7 +77,7 @@
 
         for (let i = 0; i < NUM_MOLECULES; i++) {
             const length = 45 + Math.random() * 15;
-            const radius = length / 2 + 6;
+            const radius = length / 2 + 4;
             let x, y, overlaps, attempts = 0;
 
             do {
@@ -96,7 +100,10 @@
                 molecules.push({
                     x: x,
                     y: y,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
                     angle: Math.random() * Math.PI * 2,
+                    vAngle: (Math.random() - 0.5) * 0.02,
                     length: length,
                     radius: radius,
                     waves: 3,
@@ -112,6 +119,77 @@
             m.leftIonized = Math.random() < alpha;
             m.rightIonized = Math.random() < alpha;
         });
+    }
+
+    function updatePhysics(width, height) {
+        for (let i = 0; i < molecules.length; i++) {
+            const m = molecules[i];
+
+            m.vx += (Math.random() - 0.5) * BROWNIAN_JITTER;
+            m.vy += (Math.random() - 0.5) * BROWNIAN_JITTER;
+            m.vAngle += (Math.random() - 0.5) * ROTATION_JITTER;
+
+            m.vx *= DAMPING;
+            m.vy *= DAMPING;
+            m.vAngle *= DAMPING;
+
+            const speed = Math.hypot(m.vx, m.vy);
+            if (speed > MAX_SPEED) {
+                m.vx = (m.vx / speed) * MAX_SPEED;
+                m.vy = (m.vy / speed) * MAX_SPEED;
+            }
+
+            m.x += m.vx;
+            m.y += m.vy;
+            m.angle += m.vAngle;
+
+            if (m.x - m.radius < 0) {
+                m.x = m.radius;
+                m.vx *= -1;
+            } else if (m.x + m.radius > width) {
+                m.x = width - m.radius;
+                m.vx *= -1;
+            }
+
+            if (m.y - m.radius < 0) {
+                m.y = m.radius;
+                m.vy *= -1;
+            } else if (m.y + m.radius > height) {
+                m.y = height - m.radius;
+                m.vy *= -1;
+            }
+        }
+
+        for (let i = 0; i < molecules.length; i++) {
+            for (let j = i + 1; j < molecules.length; j++) {
+                const m1 = molecules[i];
+                const m2 = molecules[j];
+                const dx = m2.x - m1.x;
+                const dy = m2.y - m1.y;
+                const dist = Math.hypot(dx, dy);
+                const minDist = m1.radius + m2.radius;
+
+                if (dist < minDist && dist > 0) {
+                    const overlap = minDist - dist;
+                    const nx = dx / dist;
+                    const ny = dy / dist;
+
+                    m1.x -= nx * overlap * 0.5;
+                    m1.y -= ny * overlap * 0.5;
+                    m2.x += nx * overlap * 0.5;
+                    m2.y += ny * overlap * 0.5;
+
+                    const kx = m1.vx - m2.vx;
+                    const ky = m1.vy - m2.vy;
+                    const p = 2 * (nx * kx + ny * ky) / 2;
+
+                    m1.vx -= p * nx;
+                    m1.vy -= p * ny;
+                    m2.vx += p * nx;
+                    m2.vy += p * ny;
+                }
+            }
+        }
     }
 
     function drawWavyLine(x1, y1, x2, y2, waves, amplitude) {
@@ -152,6 +230,8 @@
         const dpr = window.devicePixelRatio || 1;
         const width = canvas.width / dpr;
         const height = canvas.height / dpr;
+
+        updatePhysics(width, height);
 
         ctx.clearRect(0, 0, width, height);
 
