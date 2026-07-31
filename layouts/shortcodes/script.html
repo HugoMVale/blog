@@ -1,2 +1,2 @@
 {{- $src := .Get "src" -}}
-<script src="{{ $src | relURL }}"{{ if .Get "defer" }} defer{{ end }}></script>
+<script src="{{ $src | relURL }}"{{ if .Get "type" }} type="{{ .Get "type" }}"{{ end }}{{ if .Get "defer" }} defer{{ end }}></script>
