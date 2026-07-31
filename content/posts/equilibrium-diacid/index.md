@@ -1,13 +1,13 @@
 ---
-title: "On the Equilibria of Multifunctional Species"
-date: 2026-07-25
+title: "A Diacid Paradox"
+date: 2026-07-26
 draft: false
 math: true
 ---
 
 Suppose we have a weak mono-acid $\mathrm{HA}$ and a diacid $\mathrm{H_2D}$ that is, in all chemical respects, similar to $\mathrm{HA}$, except that it has two acid groups so far apart that they do not interact. How do the acid dissociation constants of $\mathrm{H_2D}$ relate to that of $\mathrm{HA}$?
 
-{{<img src="multifunctional-equilibrium.png" alt="Mono-acid and di-acid" width="450px" caption="A mono carboxylic acid and a chemically similar di-acid.">}}
+{{<img src="equilibrium-diacid.png" alt="Mono-acid and di-acid" width="450px" caption="A mono carboxylic acid and a chemically similar di-acid.">}}
 
 Certainly, since the two acid groups are identical, we might expect:
 
