@@ -1,5 +1,5 @@
 ---
-title: "A Tall Can with 3 Holes"
+title: "The Case of the 3-Hole Can"
 date: 2026-07-25
 draft: false
 math: true
@@ -7,7 +7,7 @@ math: true
 
 
 
-The other day, I saw this [video](https://www.youtube.com/watch?v=4wa8IKMYwK8&t=1080s) from Prof. Miller and was immediately _enchanted_ by the question:
+The other day, I saw this [video](https://www.youtube.com/watch?v=4wa8IKMYwK8&t=1080s) from Prof. Julius Sumner Miller and was immediately _enchanted_ by the question:
 
 > How does the water come out of a tall can in which three holes reside?
 
