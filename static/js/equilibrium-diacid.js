@@ -34,7 +34,7 @@
 
     const label = document.createElement('label');
     label.setAttribute('for', 'alpha-slider');
-    label.innerHTML = 'Degree of ionization (α): <strong id="alpha-val">0.50</strong>';
+    label.textContent = 'Degree of ionization (α):';
 
     const slider = document.createElement('input');
     slider.type = 'range';
@@ -44,6 +44,11 @@
     slider.step = '0.01';
     slider.value = alpha;
 
+    const valueSpan = document.createElement('span');
+    valueSpan.id = 'alpha-val';
+    valueSpan.textContent = alpha.toFixed(2);
+    valueSpan.style.minWidth = '35px';
+
     slider.addEventListener('input', (e) => {
         alpha = parseFloat(e.target.value);
         document.getElementById('alpha-val').textContent = alpha.toFixed(2);
@@ -51,6 +56,7 @@
 
     sliderContainer.appendChild(label);
     sliderContainer.appendChild(slider);
+    sliderContainer.appendChild(valueSpan);
 
     canvas.parentNode.insertBefore(container, canvas);
     container.appendChild(canvas);
