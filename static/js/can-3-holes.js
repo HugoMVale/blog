@@ -1,5 +1,5 @@
 (function () {
-    const canvas = document.getElementById("tall-can");
+    const canvas = document.getElementById("can-3-holes");
     if (!canvas) return;
 
     const container = document.createElement("div");

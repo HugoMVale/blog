@@ -61,4 +61,5 @@ $$ x_{max} = 2 \sqrt{\left(H-\frac{H}{2}\right)\frac{H}{2}} = H $$
 
 There is something almost magical about this elegant result: the maximum distance traveled by the jet is exactly equal to the height of the liquid.
 
-{{< animation "tall-can" >}}
+<canvas id="can-3-holes"></canvas>
+{{< script src="js/can-3-holes.js" >}}
