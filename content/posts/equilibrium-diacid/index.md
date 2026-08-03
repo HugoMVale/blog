@@ -143,5 +143,4 @@ This is exactly the same expression one obtains for two equivalents of the corre
 
 So, surprising as it may seem, the result is correct after all!
 
-<canvas id="equilibrium-diacid"></canvas>
-{{< script src="js/equilibrium-diacid.js" >}}
+{{< animation "equilibrium-diacid" >}}
