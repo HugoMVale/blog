@@ -14,14 +14,18 @@ if (canvas) {
     .csm-buttons button { cursor: pointer; padding: 0.3rem 0.7rem; border-radius: 6px; border: 1px solid var(--border, #ccc); background: var(--code-bg, #f5f5f5); color: inherit; font-size: 0.85rem; }
     .csm-buttons button:hover { background: var(--tag-border, #e0e0e0); }
     .csm-canvas { width: 100%; touch-action: none; cursor: crosshair; border: 1px solid var(--border, #ccc); border-radius: 6px; }
-    .csm-math { font-family: 'Cambria Math', 'STIX Two Math', 'Latin Modern Math', 'Times New Roman', serif; font-style: italic; }
-    .csm-frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; text-align: center; font-size: 0.85em; line-height: 1.15; margin: 0 2px; }
-    .csm-frac .csm-num { border-bottom: 1px solid currentColor; padding: 0 3px; }
-    .csm-frac .csm-den { padding: 0 3px; }
+    .csm-canvas-wrap { position: relative; }
+    .csm-canvas-label { position: absolute; opacity: 0.6; font-size: 0.8rem; pointer-events: none; }
+    .csm-row .katex { font-size: 1.05em; }
     .csm-val-display { min-width: 3rem; display: inline-block; }
     .csm-hint { font-size: 0.85rem; margin-bottom: 0.5rem; }
   `;
     document.head.appendChild(style);
+
+    function renderMath(el, tex) {
+        if (window.katex) window.katex.render(tex, el, { throwOnError: false });
+        else el.textContent = tex;
+    }
 
     const wrap = document.createElement('div');
     wrap.className = 'csm-wrap';
@@ -33,34 +37,38 @@ if (canvas) {
 
     const cRow = document.createElement('div');
     cRow.className = 'csm-row';
-    cRow.innerHTML = `<label for="csm-c2" class="csm-math"><span class="csm-frac"><span class="csm-num">KL<sup>2</sup></span><span class="csm-den">M</span></span></label>
+    cRow.innerHTML = `<label for="csm-c2" id="csm-c2-label"></label>
     <input id="csm-c2" type="range" min="0.05" max="4" step="0.01" value="0.5">
     <span id="csm-c2-val">0.50</span>`;
     controls.appendChild(cRow);
+    renderMath(document.getElementById('csm-c2-label'), '\\dfrac{KL^2}{M}');
 
     const nRow = document.createElement('div');
     nRow.className = 'csm-row';
-    nRow.innerHTML = `<label for="csm-n" class="csm-math">N</label>
+    nRow.innerHTML = `<label for="csm-n" id="csm-n-label"></label>
     <input id="csm-n" type="range" min="1" max="20" step="1" value="5">
     <span id="csm-n-val">5</span>`;
     controls.appendChild(nRow);
+    renderMath(document.getElementById('csm-n-label'), 'N');
 
     const speedRow = document.createElement('div');
     speedRow.className = 'csm-row';
-    speedRow.innerHTML = `<label for="csm-speed" class="csm-math">time/frame</label>
+    speedRow.innerHTML = `<label for="csm-speed">time/frame</label>
     <input id="csm-speed" type="range" min="0.01" max="0.2" step="0.01" value="0.05">
     <span id="csm-speed-val">0.05</span>`;
     controls.appendChild(speedRow);
 
     const timeRow = document.createElement('div');
     timeRow.className = 'csm-row';
-    timeRow.innerHTML = `<span class="csm-math">t = </span><span id="csm-time-val" class="csm-val-display">0.00</span>`;
+    timeRow.innerHTML = `<span id="csm-time-label"></span><span id="csm-time-val" class="csm-val-display">0.00</span>`;
     controls.appendChild(timeRow);
+    renderMath(document.getElementById('csm-time-label'), 't =');
 
     const energyRow = document.createElement('div');
     energyRow.className = 'csm-row';
-    energyRow.innerHTML = `<span class="csm-math">E/M = </span><span id="csm-energy-val" class="csm-val-display">0.000</span>`;
+    energyRow.innerHTML = `<span id="csm-energy-label"></span><span id="csm-energy-val" class="csm-val-display">0.000</span>`;
     controls.appendChild(energyRow);
+    renderMath(document.getElementById('csm-energy-label'), '\\dfrac{E}{M} =');
 
     const buttons = document.createElement('div');
     buttons.className = 'csm-buttons';
@@ -76,7 +84,10 @@ if (canvas) {
     hint.textContent = '💡 Tip: Drag the masses left or right to adjust their initial positions.';
     wrap.appendChild(hint);
 
-    wrap.appendChild(canvas);
+    const canvasWrap = document.createElement('div');
+    canvasWrap.className = 'csm-canvas-wrap';
+    wrap.appendChild(canvasWrap);
+    canvasWrap.appendChild(canvas);
     canvas.className = 'csm-canvas';
     canvas.style.width = '100%';
 
@@ -112,8 +123,18 @@ if (canvas) {
     const SPRING_COILS = 5;
     const SPRING_AMP = 7;
     const X_MARGIN = 15;
-    const MATH_FONT = 'italic 12px "STIX Two Math", "Cambria Math", "Times New Roman", serif';
     const LABEL_FONT = '11px sans-serif';
+
+    function addCanvasLabel(top, tex) {
+        const el = document.createElement('span');
+        el.className = 'csm-canvas-label';
+        el.style.left = (X_MARGIN + 6) + 'px';
+        el.style.top = top + 'px';
+        canvasWrap.appendChild(el);
+        renderMath(el, tex);
+    }
+    addCanvasLabel(2, 'u(x)');
+    addCanvasLabel(U_H + GAP + 2, 'v(x)');
 
     let K_L2_M = parseFloat(c2Input.value);
     let N = parseInt(nInput.value, 10);
@@ -257,7 +278,7 @@ if (canvas) {
         ctx.stroke();
     }
 
-    function drawCurve(field, yTop, height, scale, label) {
+    function drawCurve(field, yTop, height, scale) {
         const w = canvas.clientWidth;
         const midY = yTop + height / 2;
         const textColor = getComputedStyle(document.body).color || '#000';
@@ -272,12 +293,6 @@ if (canvas) {
         ctx.lineTo(w - X_MARGIN, midY);
         ctx.stroke();
         ctx.setLineDash([]);
-        ctx.globalAlpha = 1;
-
-        ctx.font = MATH_FONT;
-        ctx.globalAlpha = 0.6;
-        ctx.fillStyle = textColor;
-        ctx.fillText(label, X_MARGIN + 6, yTop + 14);
         ctx.globalAlpha = 1;
 
         ctx.strokeStyle = textColor;
@@ -347,8 +362,8 @@ if (canvas) {
     function draw() {
         const w = canvas.clientWidth;
         ctx.clearRect(0, 0, w, CANVAS_H);
-        drawCurve(u, 0, U_H, curveScale, 'u(x)');
-        drawCurve(v, U_H + GAP, V_H, vScale, 'v(x)');
+        drawCurve(u, 0, U_H, curveScale);
+        drawCurve(v, U_H + GAP, V_H, vScale);
         drawPhysicalPanel(w);
 
         timeVal.textContent = simTime.toFixed(2);
