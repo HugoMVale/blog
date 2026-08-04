@@ -179,7 +179,7 @@ if (canvas) {
     }
 
     function setupGrid() {
-        dx = 1 / N;
+        dx = 1 / (N + 1);
         const c = Math.sqrt(K_L2_M);
         const dtCFL = dx / c;
         dt = 0.1 * dtCFL;
