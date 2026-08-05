@@ -134,7 +134,7 @@ if (canvas) {
         renderMath(el, tex);
     }
     addCanvasLabel(2, 'u(x)');
-    addCanvasLabel(U_H + GAP + 2, 'v(x)');
+    addCanvasLabel(U_H + GAP + 2, '\\dot{u}(x)');
 
     let K_L2_M = parseFloat(c2Input.value);
     let N = parseInt(nInput.value, 10);
